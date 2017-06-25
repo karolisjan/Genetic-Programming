@@ -1,5 +1,5 @@
 # Genetic-Programming
-A collection of various Genetic Programming projects, e.g. Symbolic Regression, Artificial Ant etc.
+A collection of various Genetic Programming projects.
 
 ## [Artificial Ant](https://github.com/karolisjan/Genetic-Programming/tree/master/artificial_ant)
 <p align="center">
