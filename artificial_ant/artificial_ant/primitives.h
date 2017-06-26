@@ -63,6 +63,8 @@ namespace Primitives
 
 	void Save(std::string program, std::string fullpath);
 
+	std::string Load(std::string fullpath);
+
 	void Test(std::string program_path, bool visualise);
 
 	extern bool display;

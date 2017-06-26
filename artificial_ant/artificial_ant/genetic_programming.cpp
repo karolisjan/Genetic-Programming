@@ -34,7 +34,7 @@ void GP::SetUp(int seed, int popsize, int gens, float p_crossover, int tournamen
 		(Primitives::TSET_END + Primitives::FSET_END - Primitives::FSET_START + 1);
 }
 
-std::string GP::Run()
+std::string GP::Run(std::string seed_prog)
 {
 	population = std::vector<Individual>(popsize);
 
@@ -44,6 +44,12 @@ std::string GP::Run()
 	}
 
 	Individual best = *std::min_element(population.begin(), population.end());
+
+	if (seed_prog != "") {
+		int idx = random<int>(0, popsize - 1);
+		population[idx].program = seed_prog;
+		population[idx].fitness = Primitives::Evaluate(seed_prog);
+	}
 
 	int epochs = gens * popsize;
 

@@ -23,6 +23,7 @@ namespace
 	}
 
 	void SetUp(GP& gp, std::string config_path, 
+		bool& seed_with_prog, string& seed_prog_path,
 		bool& save, std::string& save_as_path,
 		bool& testing_on, std::string& program_path, bool& visualise)
 	{
@@ -39,7 +40,9 @@ namespace
 		program_path = ini.Read<std::string>(section, "program_to_test");
 
 		section = "GP_PARAMETERS";
-		int seed = ini.Read<int>(section, "seed");
+		int seed = ini.Read<int>(section, "random_seed");
+		seed_with_prog = ini.Read<bool>(section, "seed_with_prog");
+		seed_prog_path = ini.Read<std::string>(section, "seed_prog_path");
 		int popsize = ini.Read<int>(section, "popsize");
 		int max_depth = ini.Read<int>(section, "max_init_depth");
 		int max_length = ini.Read<int>(section, "max_program_length");
@@ -47,6 +50,9 @@ namespace
 		int tournament_size = ini.Read<int>(section, "tournament_size");
 		float pm_per_node = ini.Read<float>(section, "mutation_rate_per_node");
 		float pcrossover = ini.Read<float>(section, "crossover_rate");
+
+		if (seed == 0)
+			seed = time(0);
 
 		section = "TRAIL_OPTIONS";
 		std::string trail_path = ini.Read<std::string>(section, "trail_filepath");
@@ -77,13 +83,14 @@ int main()
 	std::string current_path = GetCurrentPath();
 	std::string config_path = current_path + "\\config.ini";
 
-	bool save, testing_on, visualise; 
-	std::string save_as_path, program_path;
+	bool save, testing_on, visualise, seed_with_prog; 
+	std::string save_as_path, program_path, seed_prog_path;
 
 	GP gp;
 
 	try {
 		SetUp(gp, config_path, 
+			seed_with_prog, seed_prog_path,
 			save, save_as_path, 
 			testing_on, program_path, visualise);
 	}
@@ -98,7 +105,11 @@ int main()
 		return 0;
 	}
 
-	std::string best_program = gp.Run();
+	std::string seed_prog = "";
+	if (seed_with_prog)
+		seed_prog = Primitives::Load(seed_prog_path);
+
+	std::string best_program = gp.Run(seed_prog);
 
 	if (save)
 		Primitives::Save(best_program, save_as_path);

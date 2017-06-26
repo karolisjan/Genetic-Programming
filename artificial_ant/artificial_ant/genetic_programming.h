@@ -13,7 +13,7 @@ public:
 	void SetUp(int seed, int popsize, int gens, float p_crossover, int tournament_size,
 		float p_pt_mutation, int max_program_length, int max_init_depth, bool verbose = false);
 
-	std::string Run();
+	std::string Run(std::string seed_prog = "");
 
 private:
 	int seed;
