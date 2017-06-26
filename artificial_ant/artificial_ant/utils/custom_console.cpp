@@ -1,16 +1,15 @@
-#pragma once
-
 #include <Windows.h>
 #include <string>
 #include <iostream>
+#include "custom_console.h"
 
 using namespace std;
 
 namespace Console
 {
-	void SetUp(int x = 0, int y = 0, char* backgroundColor = "F", char* textColor = "0")
+	void SetUp(int x , int y, int cx, int cy, char* backgroundColor, char* textColor)
 	{
-		SetWindowPos(GetConsoleWindow(), 0, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowPos(GetConsoleWindow(), 0, x, y, cx, cy, SWP_NOSIZE | SWP_NOZORDER);
 
 		RECT rectDesktop;
 		HWND hDesktop = GetDesktopWindow();
@@ -69,7 +68,7 @@ namespace Console
 		return SetConsoleCursorInfo(myconsole, &CURSOR);
 	}
 
-	void SetCursorPosition(char x, char y)
+	void SetCursorPosition(int x, int y)
 	{
 		static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 		std::cout.flush();
@@ -81,6 +80,16 @@ namespace Console
 	{
 		system("mode 650");
 		ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
+	}
+
+	void Move(int x, int y)
+	{
+		SetWindowPos(GetConsoleWindow(), 0, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
+
+	void Resize(int x, int y, int cx, int cy)
+	{
+		SetWindowPos(GetConsoleWindow(), 0, x, y, cx, cy, SWP_NOSIZE | SWP_NOZORDER);
 	}
 
 	void cls()

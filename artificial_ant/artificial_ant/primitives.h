@@ -61,7 +61,11 @@ namespace Primitives
 
 	int Evaluate(std::string program);
 
-	void SaveProgram(std::string program, std::string fullpath);
+	void Save(std::string program, std::string fullpath);
+
+	void Test(std::string program_path, bool visualise);
+
+	extern bool display;
 }
 
 

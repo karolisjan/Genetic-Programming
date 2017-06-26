@@ -3,8 +3,11 @@
 #include "primitives.h"
 #include "ant.h"
 #include "world.h"
+#include "utils/custom_console.h"
 
-#include <exception>
+#include <boost/thread/thread.hpp>
+#include <iostream>
+#include <ostream>
 
 
 namespace Ant
@@ -15,6 +18,28 @@ namespace Ant
 namespace World
 {
 	World world;
+}
+
+std::ostream &operator<<(std::ostream &os, World::World& world)
+{
+	for (char x = 0; x < world.trail.size(); ++x) {
+		for (char y = 0; y < world.trail[x].size(); ++y) {
+			os << world.trail[x][y] << " ";
+		}
+
+		os << "\n";
+	}
+
+	return os;
+}
+
+std::ostream &operator<<(std::ostream &os, Ant::Ant& ant)
+{
+	Console::SetCursorPosition(ant.x * 2, ant.y);
+	os << ant.Draw();
+	boost::this_thread::sleep(boost::posix_time::milliseconds(150));
+
+	return os;
 }
 
 namespace Primitives
@@ -56,6 +81,10 @@ namespace Primitives
 
 	int Move()
 	{
+		if (display)
+			Console::SetCursorPosition(Ant::ant.x * 2, Ant::ant.y);
+			std::cout << ".";
+
 		if (Ant::ant.steps_left-- > 0) {
 
 			Ant::ant.x += Ant::ant.facing.first;
@@ -76,8 +105,8 @@ namespace Primitives
 				Ant::ant.food_eaten += 1;
 			}
 
-			//if (ant.food_eaten < num_food_pieces)
-			//	ant.paint_ant();
+			if (display && Ant::ant.food_eaten < World::world.num_food_pieces)
+				std::cout << Ant::ant;
 		}
 
 		return 0;
@@ -88,8 +117,8 @@ namespace Primitives
 		if (Ant::ant.steps_left > 0)
 			++Ant::ant;
 
-		//if (Ant::ant.food_eaten < World::world.num_food_pieces)
-		//	Ant::ant.Draw();
+		if (display && Ant::ant.food_eaten < World::world.num_food_pieces)
+			std::cout << Ant::ant;
 
 		return 0;
 	}
@@ -99,8 +128,8 @@ namespace Primitives
 		if (Ant::ant.steps_left > 0)
 			--Ant::ant;
 
-		//if (ant.food_eaten < num_food_pieces)
-		//	ant.paint_ant();
+		if (display && Ant::ant.food_eaten < World::world.num_food_pieces)
+			std::cout << Ant::ant;
 
 		return 0;
 	}
@@ -127,21 +156,6 @@ namespace Primitives
 		World::world.Refresh();
 		Ant::ant.Spawn();
 
-		int i = 0;
-		std::string broken = { IF_FOOD_AHEAD, PROG3, PROG3,			LEFT,
-																	MOVE, 
-																	MOVE, 
-													 IF_FOOD_AHEAD, MOVE,
-																	MOVE,
-													 IF_FOOD_AHEAD, LEFT,
-																	MOVE,
-											  PROG3, PROG2,			MOVE,
-																	LEFT,
-													 PROG2,			LEFT,
-																	MOVE,
-													 PROG2,			LEFT,
-																	LEFT};
-
 		while (Ant::ant.steps_left > 0) {
 			current_node = program.begin();
 			Next();
@@ -150,7 +164,7 @@ namespace Primitives
 		return World::world.num_food_pieces - Ant::ant.food_eaten;
 	}
 
-	void SaveProgram(std::string program, std::string fullpath)
+	void Save(std::string program, std::string fullpath)
 	{
 		std::fstream program_file(fullpath, std::ios::out);
 
@@ -166,6 +180,45 @@ namespace Primitives
 			program_file << tokens[program[i]] << "\n";
 
 		program_file.close();
+	}
+
+	void Test(std::string program_path, bool visualise)
+	{
+		std::fstream program_file(program_path);
+
+		std::unordered_map<std::string, char> reverse_tokens;
+		reverse_tokens.emplace("MOVE", MOVE);
+		reverse_tokens.emplace("RIGHT", RIGHT);
+		reverse_tokens.emplace("LEFT", LEFT);
+		reverse_tokens.emplace("IF-FOOD-AHEAD", IF_FOOD_AHEAD);
+		reverse_tokens.emplace("PROG2", PROG2);
+		reverse_tokens.emplace("PROG3", PROG3);
+
+		std::string line, program;
+		while (true) {
+			getline(program_file, line);
+			if (program_file.eof())
+				break;
+			program += reverse_tokens[line];
+		}
+
+		program_file.close();
+
+		display = visualise;
+
+		Console::Maximise();
+		Console::HideCursor();
+
+		std::cout << World::world;
+
+		Evaluate(program);
+
+		Console::SetCursorPosition(0, World::world.height);
+
+		printf("\nNo. pieces available: %d", World::world.num_food_pieces);
+		printf("\nNo. pieces eaten: %d", Ant::ant.food_eaten);
+		printf("\nDone!");
+		getchar();
 	}
 
 	int ArityMin1(char& x, char dummy)
@@ -205,4 +258,6 @@ namespace Primitives
 		for (i = Primitives::FSET_START; i <= Primitives::FSET_END; ++i)
 			jumptable.emplace(i, Primitives::fset[i - Primitives::FSET_START]);
 	}
+
+	bool display = false;
 }
