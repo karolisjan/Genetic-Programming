@@ -31,6 +31,7 @@ namespace World
 			trail_file.close();
 			width = entry.size();
 			height = trail.size();
+			trail_copy = trail;
 		}
 
 		void Load(std::vector<std::vector<char>>& trail)
@@ -59,7 +60,6 @@ namespace World
 
 	private:
 		std::vector<std::vector<char>> trail_copy;
-
 	};
 
 	extern World world;

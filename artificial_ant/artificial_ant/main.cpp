@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <exception>
 #include <boost\filesystem.hpp>
 #include <boost\lexical_cast.hpp>
 
@@ -9,6 +10,7 @@
 #include "world.h"
 #include "functions_terminals.h"
 #include "genetic_programming.h"
+
 
 namespace 
 {
@@ -76,7 +78,7 @@ int main()
 	try {
 		SetUp(gp, config_path, save, save_as_path);
 	}
-	catch (exception &e) {
+	catch (std::exception &e) {
 		printf("%s", e.what());
 		getchar();
 		return 1;

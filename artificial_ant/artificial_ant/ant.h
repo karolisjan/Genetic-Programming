@@ -20,16 +20,19 @@ namespace Ant
 
 		void SetUp(int x = 0, int y = 0, std::pair<int, int> facing = std::make_pair(1, 0), int num_steps = 400)
 		{
-			this->x = x;
-			this->y = y;
-			this->facing = facing;
-			this->steps_left = num_steps;
+			this->x_cpy = x;
+			this->y_cpy = y;
+			this->facing_cpy = facing;
+			this->steps_left_cpy = num_steps;
 		}
 
 
 		void Spawn()
 		{
-
+			x = x_cpy;
+			y = y_cpy;
+			facing = facing_cpy;
+			steps_left = steps_left_cpy;
 		}
 
 
@@ -75,7 +78,6 @@ namespace Ant
 			return ant_face;
 		}
 
-
 		int x;
 		int y;
 		std::pair<int, int> facing;
@@ -83,6 +85,11 @@ namespace Ant
 		int steps_left;
 		char ant_face;
 
+private:		
+		int x_cpy;
+		int y_cpy;
+		std::pair<int, int> facing_cpy;
+		int steps_left_cpy;
 	};
 
 	extern Ant ant;
