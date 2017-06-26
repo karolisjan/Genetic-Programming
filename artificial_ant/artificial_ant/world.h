@@ -10,7 +10,7 @@ namespace World
 {
 	struct World
 	{
-		void Load(std::string trail_path)
+		void SetUp(std::string trail_path)
 		{
 			std::ifstream trail_file(trail_path);
 
@@ -34,7 +34,7 @@ namespace World
 			trail_copy = trail;
 		}
 
-		void Load(std::vector<std::vector<char>>& trail)
+		void SetUp(std::vector<std::vector<char>>& trail)
 		{
 			trail_copy = trail;
 			Refresh();

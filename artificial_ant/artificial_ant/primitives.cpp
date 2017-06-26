@@ -1,10 +1,11 @@
 #pragma once
 
-#include "functions_terminals.h"
+#include "primitives.h"
 #include "ant.h"
 #include "world.h"
 
 #include <exception>
+
 
 namespace Ant
 {
@@ -16,12 +17,12 @@ namespace World
 	World world;
 }
 
-namespace FunctionsTerminals
+namespace Primitives
 {
-	Jumptable::Function tset[] = { Move, Right, Left }; // terminal set
-	Jumptable::Function fset[] = { IfFoodAhead, Prog2, Prog3 }; // function set
+	Function tset[] = { Move, Right, Left }; // terminal set
+	Function fset[] = { IfFoodAhead, Prog2, Prog3 }; // function set
 
-	int FunctionsTerminals::IsFoodAhead()
+	int Primitives::IsFoodAhead()
 	{
 		char x = Ant::ant.x + Ant::ant.facing.first,
 			 y = Ant::ant.y + Ant::ant.facing.second;
@@ -42,12 +43,12 @@ namespace FunctionsTerminals
 	int IfFoodAhead()
 	{
 		if (IsFoodAhead()) {
-			Jumptable::Next();
-			++Jumptable::current_node;
+			Next();
+			++current_node;
 		}
 		else {
-			++Jumptable::current_node;
-			Jumptable::Next();
+			++current_node;
+			Next();
 		}
 
 		return 0;
@@ -71,6 +72,7 @@ namespace FunctionsTerminals
 				Ant::ant.y = 0;
 
 			if (World::world.HasFood(Ant::ant.x, Ant::ant.y)) {
+				World::world.RemovePiece(Ant::ant.x, Ant::ant.y);
 				Ant::ant.food_eaten += 1;
 			}
 
@@ -105,17 +107,17 @@ namespace FunctionsTerminals
 
 	int Prog2()
 	{
-		Jumptable::Next();
-		Jumptable::Next();
+		Next();
+		Next();
 
 		return 0;
 	}
 
 	int Prog3()
 	{
-		Jumptable::Next();
-		Jumptable::Next();
-		Jumptable::Next();
+		Next();
+		Next();
+		Next();
 
 		return 0;
 	}
@@ -125,9 +127,24 @@ namespace FunctionsTerminals
 		World::world.Refresh();
 		Ant::ant.Spawn();
 
+		int i = 0;
+		std::string broken = { IF_FOOD_AHEAD, PROG3, PROG3,			LEFT,
+																	MOVE, 
+																	MOVE, 
+													 IF_FOOD_AHEAD, MOVE,
+																	MOVE,
+													 IF_FOOD_AHEAD, LEFT,
+																	MOVE,
+											  PROG3, PROG2,			MOVE,
+																	LEFT,
+													 PROG2,			LEFT,
+																	MOVE,
+													 PROG2,			LEFT,
+																	LEFT};
+
 		while (Ant::ant.steps_left > 0) {
-			Jumptable::current_node = program.begin();
-			Jumptable::Next();
+			current_node = program.begin();
+			Next();
 		}
 
 		return World::world.num_food_pieces - Ant::ant.food_eaten;
@@ -153,7 +170,7 @@ namespace FunctionsTerminals
 
 	int ArityMin1(char& x, char dummy)
 	{
-		if (x < FunctionsTerminals::FSET_START || x == IF_FOOD_AHEAD)
+		if (x < Primitives::FSET_START)
 			return -1;
 
 		if (x == PROG3)
@@ -161,10 +178,7 @@ namespace FunctionsTerminals
 
 		return 1;
 	}
-}
 
-namespace Jumptable
-{
 	std::unordered_map<char, Function> terminals;
 	std::unordered_map<char, Function> jumptable;
 	std::string::const_iterator current_node;
@@ -181,14 +195,14 @@ namespace Jumptable
 
 	void SetUp()
 	{
-		char i = 1;
+		char i = Primitives::TSET_START;
 
-		for (; i <= FunctionsTerminals::TSET_END; ++i) {
-			terminals.emplace(i, FunctionsTerminals::tset[i]);
+		for (; i <= Primitives::TSET_END; ++i) {
+			terminals.emplace(i, Primitives::tset[i - Primitives::TSET_START]);
 			jumptable.emplace(i, Terminal);
 		}
 
-		for (i = FunctionsTerminals::FSET_START; i <= FunctionsTerminals::FSET_END; ++i)
-			jumptable.emplace(i, FunctionsTerminals::fset[i - FunctionsTerminals::FSET_START]);
+		for (i = Primitives::FSET_START; i <= Primitives::FSET_END; ++i)
+			jumptable.emplace(i, Primitives::fset[i - Primitives::FSET_START]);
 	}
 }

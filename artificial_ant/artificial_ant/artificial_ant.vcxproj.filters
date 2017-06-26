@@ -21,9 +21,6 @@
     <ClInclude Include="options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="utils\ini_reader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -33,13 +30,13 @@
     <ClInclude Include="genetic_programming.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="functions_terminals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="primitives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,14 +47,11 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="genetic_programming.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="functions_terminals.cpp">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="primitives.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
