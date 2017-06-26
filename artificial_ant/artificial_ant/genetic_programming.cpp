@@ -1,6 +1,6 @@
 #include "genetic_programming.h"
 #include "utils/utils.hpp"
-#include "functions_terminals.h"
+#include "primitives.h"
 
 #include <functional>
 
@@ -32,17 +32,17 @@ void GP::SetUp(int seed, int popsize, int gens, float p_crossover, int tournamen
 
 	srand(seed);
 
-	p_grow = (float)FunctionsTerminals::TSET_END /
-		(FunctionsTerminals::TSET_END + FunctionsTerminals::FSET_END - FunctionsTerminals::FSET_START + 1);
+	p_grow = (float)Primitives::TSET_END /
+		(Primitives::TSET_END + Primitives::FSET_END - Primitives::FSET_START + 1);
 }
 
 std::string GP::Run()
 {
 	population = std::vector<Individual>(popsize);
 
-	for (auto& i : population) {
+	for (auto &i : population) {
 		i.program = BuildTree(max_init_depth, random<int>(0, 1));
-		i.fitness = FunctionsTerminals::Evaluate(i.program);
+		i.fitness = Primitives::Evaluate(i.program);
 	}
 
 	Individual best = *std::min_element(population.begin(), population.end());
@@ -60,7 +60,7 @@ std::string GP::Run()
 			SubtreeMutation(offspring.program);
 		}
 
-		offspring.fitness = FunctionsTerminals::Evaluate(offspring.program);
+		offspring.fitness = Primitives::Evaluate(offspring.program);
 
 		if (offspring < best)
 			best = offspring;
@@ -78,20 +78,27 @@ std::string GP::Run()
 
 std::string GP::BuildTree(int max_depth, int method)
 {
-	if (max_depth == 0 || (method == GROW && random<float>() < p_grow))
-		return std::string(1, random<char>(FunctionsTerminals::TSET_START, FunctionsTerminals::TSET_END));
+	//if (max_depth == 0 || (method == GROW && random<float>() < p_grow)) {
+	//	return std::string(1, random<char>(1, Primitives::TSET_END));
+	//}
+	//else {
+	//	char primitive = random<char>(Primitives::FSET_START, Primitives::FSET_END);
 
-	char primitive = random<char>(FunctionsTerminals::FSET_START, FunctionsTerminals::FSET_END);
-	std::string program = std::string(1, primitive);
-
-	//switch (FunctionsTerminals::ArityMin1(primitive)) {
+	//	switch (Primitives::ArityMin1(primitive)) {
 	//	case 1:
 	//		return std::string(1, primitive) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method);
 	//	case 2:
 	//		return std::string(1, primitive) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method);
+	//	}
 	//}
+	 
+	if (max_depth == 0 || (method == GROW && random<float>() < p_grow))
+		return std::string(1, random<char>(Primitives::TSET_START, Primitives::TSET_END));
 
-	for (int i = 0; i < FunctionsTerminals::ArityMin1(primitive); ++i)
+	char primitive = random<int>(Primitives::FSET_START, Primitives::FSET_END);
+	std::string program = std::string(1, primitive);
+
+	for (int i = 0; i < Primitives::ArityMin1(primitive) + 1; ++i)
 		program += BuildTree(max_depth - 1, method);
 
 	return program;
@@ -115,10 +122,10 @@ int GP::Tournament(Cnt &container, int tsize, Cmp comparison)
 
 std::pair<GP::Node, GP::Node> GP::SelectSubtree(std::string &program)
 {
-	Node end, begin = end = program.begin() + Tournament(program, 3, FunctionsTerminals::ArityMin1); // beginning of the tree
+	Node end, begin = end = program.begin() + Tournament(program, 3, Primitives::ArityMin1); // beginning of the tree
 
 	int children = 1;
-	for (; children > 0; children += FunctionsTerminals::ArityMin1(*end++)) {} //finds the end of the subtree, i.e. when children = 0;
+	for (; children > 0; children += Primitives::ArityMin1(*end++)) {} //finds the end of the subtree, i.e. when children = 0;
 
 	return std::make_pair(begin, end);
 }
@@ -142,8 +149,8 @@ void GP::PtMutation(std::string &program)
 {
 	for (Node n = program.begin(); n != program.end(); ++n)
 		if (random<float>() < p_pt_mutation)
-			*n = FunctionsTerminals::ArityMin1(*n) == 1 ?
-			random<char>(FunctionsTerminals::FSET_START, FunctionsTerminals::FSET_END) : random<char>(1, FunctionsTerminals::TSET_END);
+			*n = Primitives::ArityMin1(*n) == 1 ?
+			random<char>(Primitives::FSET_START, Primitives::FSET_END) : random<char>(1, Primitives::TSET_END);
 }
 
 

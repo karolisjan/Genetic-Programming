@@ -8,12 +8,33 @@
 #include "utils/ini_reader.hpp"
 #include "ant.h"
 #include "world.h"
-#include "functions_terminals.h"
+#include "primitives.h"
 #include "genetic_programming.h"
+
+using namespace Primitives;
 
 
 namespace 
 {
+	void Test()
+	{
+		std::string broken = { IF_FOOD_AHEAD, PROG3, PROG3,			LEFT,
+			MOVE,
+			MOVE,
+			IF_FOOD_AHEAD, MOVE,
+			MOVE,
+			IF_FOOD_AHEAD, LEFT,
+			MOVE,
+			PROG3, PROG2,			MOVE,
+			LEFT,
+			PROG2,			LEFT,
+			MOVE,
+			PROG2,			LEFT,
+			LEFT };
+
+		Evaluate(broken);
+	}
+
 	std::string GetCurrentPath()
 	{
 		boost::filesystem::path fullpath(boost::filesystem::current_path());
@@ -54,12 +75,12 @@ namespace
 		int facing_y = ini.Read<int>(section, "facing_y");
 		int max_steps = ini.Read<int>(section, "max_steps");
 
-		Jumptable::SetUp();
+		Primitives::SetUp();
 
 		gp.SetUp(seed, popsize, generations, pcrossover,
 			tournament_size, pm_per_node, max_length, max_depth, verbose);
 
-		World::world.Load(trail_path);
+		World::world.SetUp(trail_path);
 		Ant::ant.SetUp(ant_x, ant_y, std::make_pair(facing_x, facing_y), max_steps);
 
 		ini.Close(); 
@@ -84,10 +105,12 @@ int main()
 		return 1;
 	}
 
+	//Test();
+
 	std::string best_program = gp.Run();
 
 	if (save)
-		FunctionsTerminals::SaveProgram(best_program, save_as_path);
+		Primitives::SaveProgram(best_program, save_as_path);
 
 	printf("\nDone!");
 	getchar();

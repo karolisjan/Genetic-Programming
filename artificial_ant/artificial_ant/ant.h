@@ -17,7 +17,6 @@ namespace Ant
 			Draw();
 		}
 
-
 		void SetUp(int x = 0, int y = 0, std::pair<int, int> facing = std::make_pair(1, 0), int num_steps = 400)
 		{
 			this->x_cpy = x;
@@ -26,15 +25,14 @@ namespace Ant
 			this->steps_left_cpy = num_steps;
 		}
 
-
 		void Spawn()
 		{
+			food_eaten = 0;
 			x = x_cpy;
 			y = y_cpy;
 			facing = facing_cpy;
 			steps_left = steps_left_cpy;
 		}
-
 
 		Ant &operator++() //for turning right, clockwise
 		{
@@ -45,7 +43,6 @@ namespace Ant
 			return *this;
 		}
 
-
 		Ant &operator--() //for turning left, counter-clockwise
 		{
 			--steps_left;
@@ -55,14 +52,12 @@ namespace Ant
 			return *this;
 		}
 
-
 		bool operator==(const std::pair<char, char> &other)
 		{
 			if (facing.first == other.first && facing.second == other.second)
 				return true;
 			return false;
 		}
-
 
 		char Draw()
 		{

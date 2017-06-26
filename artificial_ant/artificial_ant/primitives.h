@@ -7,7 +7,7 @@
 #include <fstream>
 
 
-namespace Jumptable
+namespace Primitives
 {
 	typedef int(*Function)();
 
@@ -20,10 +20,7 @@ namespace Jumptable
 	int Terminal();
 
 	void SetUp();
-}
 
-namespace FunctionsTerminals
-{
 	int IsFoodAhead();
 
 	int IfFoodAhead();
@@ -56,8 +53,9 @@ namespace FunctionsTerminals
 		FSET_END = PROG3
 	};
 
-	extern Jumptable::Function tset[];
-	extern Jumptable::Function fset[];
+	Function tset[];
+
+	Function fset[];
 
 	int ArityMin1(char& x, char dummy = '0');
 
