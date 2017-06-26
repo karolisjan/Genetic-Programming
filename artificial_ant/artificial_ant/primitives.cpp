@@ -152,17 +152,25 @@ namespace Primitives
 		return 0;
 	}
 
-	int Evaluate(std::string program)
+	float Evaluate(std::string program)
 	{
 		World::world.Refresh();
 		Ant::ant.Spawn();
+
+		int best_steps = Ant::ant.steps_left;
+		int best_num_eaten = World::world.num_food_pieces;
+		
+		auto normalise_steps = [&best_steps](int steps_left)->float {return (float)steps_left / best_steps; };
+		auto normalise_num_eaten = [&best_num_eaten](int num_pieces_eaten)->float {return (float)num_pieces_eaten / best_num_eaten; };
 
 		while (Ant::ant.steps_left > 0) {
 			current_node = program.begin();
 			Next();
 		}
 
-		return World::world.num_food_pieces - Ant::ant.food_eaten;
+		float food_weight = 0.7, steps_weight = 0.3;
+
+		return 1 - food_weight * normalise_num_eaten(Ant::ant.food_eaten) - steps_weight * normalise_steps(Ant::ant.steps_left);
 	}
 
 	void Save(std::string program, std::string fullpath)

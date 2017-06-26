@@ -49,6 +49,9 @@ std::string GP::Run(std::string seed_prog)
 		int idx = random<int>(0, popsize - 1);
 		population[idx].program = seed_prog;
 		population[idx].fitness = Primitives::Evaluate(seed_prog);
+
+		if (population[idx] < best)
+			best = population[idx];
 	}
 
 	int epochs = gens * popsize;
