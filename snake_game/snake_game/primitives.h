@@ -21,11 +21,37 @@ namespace Primitives
 
 	void SetUp();
 
+	int Move();
+
 	int IsFoodAhead();
 
 	int IfFoodAhead();
 
-	int Move();
+	bool IsDangerNear();
+
+	int IfFoodAhead();
+
+	int IfFoodUp();
+
+	int IfFoodRight();
+
+	int IfDangerAhead();
+
+	int IfDangerTwoAhead();
+
+	int IfDangerLeft();
+
+	int IfDangerRight();
+
+	int IfMovingUp();
+
+	int IfMovingDown();
+
+	int IfMovingLeft();
+
+	int IfMovingRight();
+
+	int Forward();
 
 	int Right();
 
@@ -38,7 +64,7 @@ namespace Primitives
 	enum terminal_set
 	{
 		TSET_START = 1,
-		MOVE = TSET_START,
+		FORWARD = TSET_START,
 		RIGHT,
 		LEFT,
 		TSET_END = LEFT
@@ -46,11 +72,21 @@ namespace Primitives
 
 	enum function_set
 	{
-		FSET_START = TSET_END + 1,
+		FSET_START = 110,
 		IF_FOOD_AHEAD = FSET_START,
+		IF_FOOD_UP,
+		IF_FOOD_RIGHT,
+		IF_DANGER_AHEAD,
+		IF_DANGER_TWO_AHEAD,
+		IF_DANGER_LEFT,
+		IF_DANGER_RIGHT,
+		IF_MOVING_UP,
+		IF_MOVING_DOWN,
+		IF_MOVING_LEFT,
+		IF_MOVING_RIGHT,
 		PROG2,
 		PROG3,
-		FSET_END = PROG3
+		FSET_END = PROG2
 	};
 
 	Function tset[];

@@ -20,27 +20,6 @@ namespace World
 	World world;
 }
 
-std::ostream &operator<<(std::ostream &os, World::World& world)
-{
-	for (char x = 0; x < world.trail.size(); ++x) {
-		for (char y = 0; y < world.trail[x].size(); ++y) {
-			os << world.trail[x][y] << " ";
-		}
-
-		os << "\n";
-	}
-
-	return os;
-}
-
-std::ostream &operator<<(std::ostream &os, Ant::Ant& ant)
-{
-	Console::SetCursorPosition(ant.x * 2, ant.y);
-	os << ant.Draw();
-	boost::this_thread::sleep(boost::posix_time::milliseconds(150));
-
-	return os;
-}
 
 namespace Primitives
 {
