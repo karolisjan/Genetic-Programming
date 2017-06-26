@@ -81,9 +81,10 @@ namespace Primitives
 
 	int Move()
 	{
-		if (display)
+		if (display) {
 			Console::SetCursorPosition(Ant::ant.x * 2, Ant::ant.y);
 			std::cout << ".";
+		}
 
 		if (Ant::ant.steps_left-- > 0) {
 
@@ -182,9 +183,9 @@ namespace Primitives
 		program_file.close();
 	}
 
-	void Test(std::string program_path, bool visualise)
+	std::string Load(std::string fullpath)
 	{
-		std::fstream program_file(program_path);
+		std::fstream program_file(fullpath);
 
 		std::unordered_map<std::string, char> reverse_tokens;
 		reverse_tokens.emplace("MOVE", MOVE);
@@ -204,6 +205,11 @@ namespace Primitives
 
 		program_file.close();
 
+		return program;
+	}
+
+	void Test(std::string program_path, bool visualise)
+	{
 		display = visualise;
 
 		Console::Maximise();
@@ -211,7 +217,7 @@ namespace Primitives
 
 		std::cout << World::world;
 
-		Evaluate(program);
+		Evaluate(Load(program_path));
 
 		Console::SetCursorPosition(0, World::world.height);
 
