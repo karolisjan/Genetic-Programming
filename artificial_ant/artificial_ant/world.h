@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 
+
 namespace World
 {
 	struct World
@@ -59,19 +60,7 @@ namespace World
 	private:
 		std::vector<std::vector<char>> trail_copy;
 
-	} world;
+	};
 
-
-	std::ostream& operator<<(std::ostream& os, World& world)
-	{
-		for (char x = 0; x < world.trail.size(); ++x) {
-			for (char y = 0; y < world.trail[x].size(); ++y) {
-				os << world.trail[x][y] << " ";
-			}
-
-			os << "\n";
-		}
-
-		return os;
-	}
+	extern World world;
 }

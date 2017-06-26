@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <ostream>
 
-#include "custom_console.hpp"
 
 namespace Ant 
 {
@@ -84,15 +83,7 @@ namespace Ant
 		int steps_left;
 		char ant_face;
 
-	} ant;
+	};
 
-
-	std::ostream& operator<<(std::ostream& os, Ant& ant)
-	{
-		Console::SetCursorPosition(ant.x * 2, ant.y);
-		cout << ant.Draw();
-		Sleep(100);
-
-		return os;
-	}
+	extern Ant ant;
 }
