@@ -1,4 +1,26 @@
 #include "genetic_programming.h"
+#include "utils/utils.hpp"
+#include "functions_terminals.h"
+
+
+template <typename R, typename ... Types> constexpr size_t GetArgumentCount(R(*f)(Types ...))
+{
+	return sizeof...(Types);
+}
+
+inline int ArityMin1(char &x, char dummy = '0')
+{
+	if (x < FunctionsTerminals::FSET_START)
+		return -1;
+
+	return GetArgumentCount(Jumptable::jumptable[x]) - 1;
+}
+
+template<class T>
+inline bool IsGreater(T &lhs, T &rhs) { return lhs > rhs; }
+
+template<class T>
+inline bool IsLess(T &lhs, T &rhs) { return lhs < rhs; }
 
 
 void GP::SetUp(int seed, int popsize, int gens, float p_crossover, int tournament_size, 
@@ -33,11 +55,11 @@ std::string GP::Run()
 	int epochs = gens * popsize;
 
 	for (int epoch = 0; epoch < epochs; ++epoch) {
-		Individual &offspring = population[Tournament(population, tournament_size, &GP::IsGreater<Individual>)]
-			= population[Tournament(population, tournament_size, &GP::IsLess<Individual>)];
+		Individual &offspring = population[Tournament(population, tournament_size, IsGreater<Individual>)]
+			= population[Tournament(population, tournament_size, IsLess<Individual>)];
 
 		if (random<float>() < p_crossover) {
-			SubtreeXO(offspring.program, population[Tournament(population, tournament_size, &GP::IsLess<Individual>)].program);
+			SubtreeXO(offspring.program, population[Tournament(population, tournament_size, IsLess<Individual>)].program);
 		}
 		else {
 			SubtreeMutation(offspring.program);
@@ -89,19 +111,19 @@ int GP::Tournament(Cnt &container, int tsize, Cmp comparison)
 		return p2;
 }
 
-pair<GP::Node, GP::Node> GP::SelectSubtree(std::string &program)
+std::pair<GP::Node, GP::Node> GP::SelectSubtree(std::string &program)
 {
-	Node end, begin = end = program.begin() + Tournament(program, 3, &GP::ArityMin1); // beginning of the tree
+	Node end, begin = end = program.begin() + Tournament(program, 3, ArityMin1); // beginning of the tree
 
 	int children = 1;
 	for (; children > 0; children += ArityMin1(*end++)) {} //finds the end of the subtree, i.e. when children = 0;
 
-	return make_pair(begin, end);
+	return std::make_pair(begin, end);
 }
 
 void GP::SubtreeXO(std::string &p1, std::string &p2)
 {
-	pair<Node, Node> range1 = SelectSubtree(p1), range2 = SelectSubtree(p2);
+	std::pair<Node, Node> range1 = SelectSubtree(p1), range2 = SelectSubtree(p2);
 
 	if ((p1.size() - (range1.second - range1.first) + (range2.second - range2.first)) < max_program_length)
 		p1.replace(range1.first, range1.second, range2.first, range2.second);

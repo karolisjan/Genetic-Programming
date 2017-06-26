@@ -146,21 +146,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ant.hpp" />
-    <ClInclude Include="catch.hpp" />
+    <ClInclude Include="ant.h" />
     <ClInclude Include="custom_console.hpp" />
     <ClInclude Include="genetic_programming.h" />
     <ClInclude Include="utils.hpp" />
-    <ClInclude Include="functions_terminals.hpp" />
+    <ClInclude Include="functions_terminals.h" />
     <ClInclude Include="options.h" />
     <ClInclude Include="utils\ini_reader.hpp" />
     <ClInclude Include="utils\utils.hpp" />
-    <ClInclude Include="world.hpp" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.ini" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="functions_terminals.cpp" />
     <ClCompile Include="genetic_programming.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="test.cpp" />

@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <algorithm>
 
-#include "utils/utils.hpp"
-#include "functions_terminals.hpp"
-
 
 class GP
 {
@@ -19,6 +16,20 @@ public:
 	std::string Run();
 
 private:
+	int seed;
+	int gens;
+	int popsize;
+	int	max_init_depth;
+	int max_program_length;
+	int	tournament_size;
+	float p_pt_mutation;
+	float p_crossover;
+	float p_grow;
+	bool verbose;
+
+	typedef std::string::iterator Node;
+	enum generation_method { GROW, FULL };
+
 	struct Individual
 	{
 		Individual() : fitness(INT_MAX) {}
@@ -46,52 +57,18 @@ private:
 		std::string	program;
 	};
 
-	typedef std::string::iterator Node;
-
-	enum generation_method { GROW, FULL };
-
-	template <typename R, typename ... Types> constexpr size_t GetArgumentCount(R(*f)(Types ...))
-	{
-		return sizeof...(Types);
-	}
-
-	inline int ArityMin1(char &x, char dummy = '0')
-	{
-		if (x < FunctionsTerminals::FSET_START)
-			return -1;
-
-		return GetArgumentCount(Jumptable::jumptable[x]) - 1;
-	}
-
-	template<class T>
-	inline bool IsGreater(T &lhs, T &rhs) { return lhs > rhs; }
-
-	template<class T>
-	inline bool IsLess(T &lhs, T &rhs) { return lhs < rhs; }
+	std::vector<Individual> population;
 
 	std::string BuildTree(int max_depth, int method);
 
 	template<class Cnt, class Cmp>
 	int Tournament(Cnt &container, int tsize, Cmp comparison);
 
-	pair<Node, Node> SelectSubtree(std::string &program);
+	std::pair<Node, Node> SelectSubtree(std::string &program);
 
 	void SubtreeXO(std::string &p1, std::string &p2);
 
 	void SubtreeMutation(std::string &program);
 
 	void PtMutation(std::string &program);
-
-	int seed;
-	int gens;
-	int popsize;
-	int	max_init_depth;
-	int max_program_length;
-	int	tournament_size;
-	float p_pt_mutation;
-	float p_crossover;
-	float p_grow;
-	bool verbose;
-
-	std::vector<Individual> population;
 };

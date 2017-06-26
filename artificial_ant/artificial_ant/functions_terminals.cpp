@@ -1,47 +1,25 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <unordered_map>
-#include <algorithm>
-#include <fstream>
+#include "functions_terminals.h"
+#include "ant.h"
+#include "world.h"
 
-#include "ant.hpp"
-#include "world.hpp"
-
-namespace Jumptable
+namespace Ant 
 {
-	typedef int(*Function)();
-	typedef Function TerminalType;
+	Ant ant;
+}
 
-	std::unordered_map<char, TerminalType> terminals;
-	std::unordered_map<char, Function> jumptable;
-	std::string::const_iterator current_node;
-
-	int Next();
+namespace World
+{
+	World world;
 }
 
 namespace FunctionsTerminals
 {
-	enum terminal_set
-	{
-		TSET_START = 1,
-		MOVE = TSET_START,
-		RIGHT,
-		LEFT,
-		TSET_END = LEFT
-	};
+	Jumptable::Function tset[] = { Move, Right, Left }; // terminal set
+	Jumptable::Function fset[] = { IfFoodAhead, Prog2, Prog3 }; // function set
 
-	enum function_set
-	{
-		FSET_START = TSET_END,
-		IF_FOOD_AHEAD,
-		PROG2,
-		PROG3,
-		FSET_END = PROG3
-	};
-
-	int IsFoodAhead()
+	int FunctionsTerminals::IsFoodAhead()
 	{
 		char x = Ant::ant.x + Ant::ant.facing.first,
 			y = Ant::ant.y + Ant::ant.facing.second;
@@ -155,9 +133,9 @@ namespace FunctionsTerminals
 
 	void SaveProgram(std::string program, std::string fullpath)
 	{
-		fstream program_file(fullpath, ios::out);
+		std::fstream program_file(fullpath, std::ios::out);
 
-		unordered_map<char, std::string> tokens;
+		std::unordered_map<char, std::string> tokens;
 		tokens.emplace(MOVE, "MOVE");
 		tokens.emplace(RIGHT, "RIGHT");
 		tokens.emplace(LEFT, "LEFT");
@@ -170,19 +148,19 @@ namespace FunctionsTerminals
 
 		program_file.close();
 	}
-
-	Jumptable::Function tset[3] = { Move, Right, Left }; // terminal set
-	Jumptable::Function fset[3] = { IfFoodAhead, Prog2, Prog3 }; // function set
 }
-
 
 namespace Jumptable
 {
+	std::unordered_map<char, TerminalType> terminals;
+	std::unordered_map<char, Function> jumptable;
+	std::string::const_iterator current_node;
+
 	int Next() { return jumptable[*current_node++](); }
 
 	int Terminal() { return terminals[*(current_node - 1)](); }
 
-	void SetUpJumptable()
+	void SetUp()
 	{
 		char i = 0;
 
@@ -195,5 +173,3 @@ namespace Jumptable
 			jumptable.emplace(i, FunctionsTerminals::fset[i - FunctionsTerminals::FSET_START]);
 	}
 }
-
-

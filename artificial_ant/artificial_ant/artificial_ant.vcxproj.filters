@@ -15,25 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="catch.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="custom_console.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ant.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="world.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="utils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="functions_terminals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utils\ini_reader.hpp">
@@ -43,6 +31,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="genetic_programming.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="functions_terminals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -58,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="genetic_programming.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="functions_terminals.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
