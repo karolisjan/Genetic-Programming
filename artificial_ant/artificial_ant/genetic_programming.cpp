@@ -10,13 +10,11 @@
 //	return sizeof...(Args);
 //}
 
-
 template<class T>
 inline bool IsGreater(T &lhs, T &rhs) { return lhs > rhs; }
 
 template<class T>
 inline bool IsLess(T &lhs, T &rhs) { return lhs < rhs; }
-
 
 void GP::SetUp(int seed, int popsize, int gens, float p_crossover, int tournament_size, 
 	float p_pt_mutation, int max_program_length, int max_init_depth, bool verbose)
@@ -77,21 +75,7 @@ std::string GP::Run()
 }
 
 std::string GP::BuildTree(int max_depth, int method)
-{
-	//if (max_depth == 0 || (method == GROW && random<float>() < p_grow)) {
-	//	return std::string(1, random<char>(1, Primitives::TSET_END));
-	//}
-	//else {
-	//	char primitive = random<char>(Primitives::FSET_START, Primitives::FSET_END);
-
-	//	switch (Primitives::ArityMin1(primitive)) {
-	//	case 1:
-	//		return std::string(1, primitive) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method);
-	//	case 2:
-	//		return std::string(1, primitive) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method);
-	//	}
-	//}
-	 
+{ 
 	if (max_depth == 0 || (method == GROW && random<float>() < p_grow))
 		return std::string(1, random<char>(Primitives::TSET_START, Primitives::TSET_END));
 

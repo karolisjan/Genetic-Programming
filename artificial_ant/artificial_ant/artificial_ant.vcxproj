@@ -153,10 +153,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ant.h" />
-    <ClInclude Include="custom_console.hpp" />
     <ClInclude Include="genetic_programming.h" />
     <ClInclude Include="primitives.h" />
     <ClInclude Include="options.h" />
+    <ClInclude Include="utils\custom_console.h" />
     <ClInclude Include="utils\ini_reader.hpp" />
     <ClInclude Include="utils\utils.hpp" />
     <ClInclude Include="world.h" />
@@ -168,6 +168,7 @@
     <ClCompile Include="primitives.cpp" />
     <ClCompile Include="genetic_programming.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="utils\custom_console.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="santa_fe_ant_trail.txt" />

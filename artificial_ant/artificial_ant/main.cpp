@@ -6,35 +6,15 @@
 #include <boost\lexical_cast.hpp>
 
 #include "utils/ini_reader.hpp"
+#include "utils/custom_console.h"
 #include "ant.h"
 #include "world.h"
 #include "primitives.h"
 #include "genetic_programming.h"
 
-using namespace Primitives;
-
 
 namespace 
 {
-	void Test()
-	{
-		std::string broken = { IF_FOOD_AHEAD, PROG3, PROG3,			LEFT,
-			MOVE,
-			MOVE,
-			IF_FOOD_AHEAD, MOVE,
-			MOVE,
-			IF_FOOD_AHEAD, LEFT,
-			MOVE,
-			PROG3, PROG2,			MOVE,
-			LEFT,
-			PROG2,			LEFT,
-			MOVE,
-			PROG2,			LEFT,
-			LEFT };
-
-		Evaluate(broken);
-	}
-
 	std::string GetCurrentPath()
 	{
 		boost::filesystem::path fullpath(boost::filesystem::current_path());
@@ -42,7 +22,9 @@ namespace
 		return std::string(temp.begin() + 1, temp.end() - 1);
 	}
 
-	void SetUp(GP& gp, std::string config_path, bool& save, std::string& save_as_path)
+	void SetUp(GP& gp, std::string config_path, 
+		bool& save, std::string& save_as_path,
+		bool& testing_on, std::string& program_path, bool& visualise)
 	{
 		IniReader ini(config_path);
 
@@ -52,8 +34,9 @@ namespace
 		save_as_path = ini.Read<std::string>(section, "save_as");
 
 		section = "TESTING";
-		bool testing_on = ini.Read<bool>(section, "testing_on");
-		std::string program_to_test = ini.Read<std::string>(section, "program_to_test");
+		testing_on = ini.Read<bool>(section, "testing_on");
+		visualise = ini.Read<bool>(section, "visualise");
+		program_path = ini.Read<std::string>(section, "program_to_test");
 
 		section = "GP_PARAMETERS";
 		int seed = ini.Read<int>(section, "seed");
@@ -89,15 +72,20 @@ namespace
 
 int main()
 {
+	Console::SetUp();
+
 	std::string current_path = GetCurrentPath();
 	std::string config_path = current_path + "\\config.ini";
 
+	bool save, testing_on, visualise; 
+	std::string save_as_path, program_path;
+
 	GP gp;
-	bool save; 
-	std::string save_as_path;
 
 	try {
-		SetUp(gp, config_path, save, save_as_path);
+		SetUp(gp, config_path, 
+			save, save_as_path, 
+			testing_on, program_path, visualise);
 	}
 	catch (std::exception &e) {
 		printf("%s", e.what());
@@ -105,12 +93,15 @@ int main()
 		return 1;
 	}
 
-	//Test();
+	if (testing_on) {
+		Primitives::Test(program_path, visualise);
+		return 0;
+	}
 
 	std::string best_program = gp.Run();
 
 	if (save)
-		Primitives::SaveProgram(best_program, save_as_path);
+		Primitives::Save(best_program, save_as_path);
 
 	printf("\nDone!");
 	getchar();
