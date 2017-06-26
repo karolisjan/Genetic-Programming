@@ -59,7 +59,7 @@ namespace Primitives
 
 	int ArityMin1(char& x, char dummy = '0');
 
-	int Evaluate(std::string program);
+	float Evaluate(std::string program);
 
 	void Save(std::string program, std::string fullpath);
 
