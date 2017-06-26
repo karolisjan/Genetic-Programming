@@ -2,19 +2,14 @@
 #include "utils/utils.hpp"
 #include "functions_terminals.h"
 
+#include <functional>
 
-template <typename R, typename ... Types> constexpr size_t GetArgumentCount(R(*f)(Types ...))
-{
-	return sizeof...(Types);
-}
 
-inline int ArityMin1(char &x, char dummy = '0')
-{
-	if (x < FunctionsTerminals::FSET_START)
-		return -1;
+//template<class R, class... Args>
+//constexpr unsigned Arity(std::function<R(Args...)> const&) {
+//	return sizeof...(Args);
+//}
 
-	return GetArgumentCount(Jumptable::jumptable[x]) - 1;
-}
 
 template<class T>
 inline bool IsGreater(T &lhs, T &rhs) { return lhs > rhs; }
@@ -38,7 +33,7 @@ void GP::SetUp(int seed, int popsize, int gens, float p_crossover, int tournamen
 	srand(seed);
 
 	p_grow = (float)FunctionsTerminals::TSET_END /
-		(FunctionsTerminals::TSET_END + FunctionsTerminals::FSET_END - FunctionsTerminals::FSET_START);
+		(FunctionsTerminals::TSET_END + FunctionsTerminals::FSET_END - FunctionsTerminals::FSET_START + 1);
 }
 
 std::string GP::Run()
@@ -46,7 +41,7 @@ std::string GP::Run()
 	population = std::vector<Individual>(popsize);
 
 	for (auto& i : population) {
-		i.program = BuildTree(max_init_depth, random<int>(0, 2));
+		i.program = BuildTree(max_init_depth, random<int>(0, 1));
 		i.fitness = FunctionsTerminals::Evaluate(i.program);
 	}
 
@@ -84,12 +79,19 @@ std::string GP::Run()
 std::string GP::BuildTree(int max_depth, int method)
 {
 	if (max_depth == 0 || (method == GROW && random<float>() < p_grow))
-		return std::string(1, random<char>(1, FunctionsTerminals::TSET_END));
+		return std::string(1, random<char>(FunctionsTerminals::TSET_START, FunctionsTerminals::TSET_END));
 
 	char primitive = random<char>(FunctionsTerminals::FSET_START, FunctionsTerminals::FSET_END);
 	std::string program = std::string(1, primitive);
 
-	for (int i = 0; i < ArityMin1(primitive); ++i)
+	//switch (FunctionsTerminals::ArityMin1(primitive)) {
+	//	case 1:
+	//		return std::string(1, primitive) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method);
+	//	case 2:
+	//		return std::string(1, primitive) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method) + BuildTree(max_depth - 1, method);
+	//}
+
+	for (int i = 0; i < FunctionsTerminals::ArityMin1(primitive); ++i)
 		program += BuildTree(max_depth - 1, method);
 
 	return program;
@@ -113,10 +115,10 @@ int GP::Tournament(Cnt &container, int tsize, Cmp comparison)
 
 std::pair<GP::Node, GP::Node> GP::SelectSubtree(std::string &program)
 {
-	Node end, begin = end = program.begin() + Tournament(program, 3, ArityMin1); // beginning of the tree
+	Node end, begin = end = program.begin() + Tournament(program, 3, FunctionsTerminals::ArityMin1); // beginning of the tree
 
 	int children = 1;
-	for (; children > 0; children += ArityMin1(*end++)) {} //finds the end of the subtree, i.e. when children = 0;
+	for (; children > 0; children += FunctionsTerminals::ArityMin1(*end++)) {} //finds the end of the subtree, i.e. when children = 0;
 
 	return std::make_pair(begin, end);
 }
@@ -140,7 +142,8 @@ void GP::PtMutation(std::string &program)
 {
 	for (Node n = program.begin(); n != program.end(); ++n)
 		if (random<float>() < p_pt_mutation)
-			*n = ArityMin1(*n) == 1 ? random<char>(FunctionsTerminals::FSET_START, FunctionsTerminals::FSET_END) : random<char>(1, FunctionsTerminals::TSET_END);
+			*n = FunctionsTerminals::ArityMin1(*n) == 1 ?
+			random<char>(FunctionsTerminals::FSET_START, FunctionsTerminals::FSET_END) : random<char>(1, FunctionsTerminals::TSET_END);
 }
 
 

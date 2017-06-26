@@ -4,7 +4,9 @@
 #include "ant.h"
 #include "world.h"
 
-namespace Ant 
+#include <exception>
+
+namespace Ant
 {
 	Ant ant;
 }
@@ -22,16 +24,16 @@ namespace FunctionsTerminals
 	int FunctionsTerminals::IsFoodAhead()
 	{
 		char x = Ant::ant.x + Ant::ant.facing.first,
-			y = Ant::ant.y + Ant::ant.facing.second;
+			 y = Ant::ant.y + Ant::ant.facing.second;
 
 		if (x < 0)
-			x = World::world.width;
-		else if (x > World::world.width)
+			x = World::world.width - 1;
+		else if (x > World::world.width - 1)
 			x = 0;
 
 		if (y < 0)
-			y = World::world.height;
-		else if (y > World::world.height)
+			y = World::world.height - 1;
+		else if (y > World::world.height - 1)
 			y = 0;
 
 		return World::world.HasFood(x, y);
@@ -148,25 +150,42 @@ namespace FunctionsTerminals
 
 		program_file.close();
 	}
+
+	int ArityMin1(char& x, char dummy)
+	{
+		if (x < FunctionsTerminals::FSET_START || x == IF_FOOD_AHEAD)
+			return -1;
+
+		if (x == PROG3)
+			return 2;
+
+		return 1;
+	}
 }
 
 namespace Jumptable
 {
-	std::unordered_map<char, TerminalType> terminals;
+	std::unordered_map<char, Function> terminals;
 	std::unordered_map<char, Function> jumptable;
 	std::string::const_iterator current_node;
 
-	int Next() { return jumptable[*current_node++](); }
+	int Next() 
+	{ 
+		return jumptable[*current_node++](); 
+	}
 
-	int Terminal() { return terminals[*(current_node - 1)](); }
+	int Terminal() 
+	{ 
+		return terminals[*(current_node - 1)](); 
+	}
 
 	void SetUp()
 	{
-		char i = 0;
+		char i = 1;
 
-		for (; i < FunctionsTerminals::TSET_END; ++i) {
-			terminals.emplace(i + 1, FunctionsTerminals::tset[i]);
-			jumptable.emplace(i + 1, Terminal);
+		for (; i <= FunctionsTerminals::TSET_END; ++i) {
+			terminals.emplace(i, FunctionsTerminals::tset[i]);
+			jumptable.emplace(i, Terminal);
 		}
 
 		for (i = FunctionsTerminals::FSET_START; i <= FunctionsTerminals::FSET_END; ++i)
