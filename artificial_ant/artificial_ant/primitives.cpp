@@ -37,7 +37,7 @@ std::ostream &operator<<(std::ostream &os, Ant::Ant& ant)
 {
 	Console::SetCursorPosition(ant.x * 2, ant.y);
 	os << ant.Draw();
-	boost::this_thread::sleep(boost::posix_time::milliseconds(150));
+	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 
 	return os;
 }
