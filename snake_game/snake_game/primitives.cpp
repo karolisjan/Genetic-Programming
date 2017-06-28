@@ -71,7 +71,7 @@ std::ostream& operator<<(std::ostream& os, Snake::Snake &snake)
 	Console::SetCursorPosition(11 + World::world.width / 2, World::world.height + 3);
 	os << snake.food_eaten;
 
-	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+	boost::this_thread::sleep(boost::posix_time::milliseconds(50));
 
 	return os;
 }
@@ -98,6 +98,7 @@ namespace Primitives
 		IfMovingDown,
 		IfMovingLeft,
 		IfMovingRight,
+		Prog2,
 	}; // function set
 
 	void CheckFood()
@@ -141,9 +142,9 @@ namespace Primitives
 
 	void SkipSubtree()
 	{
-		int not_terminal = 1;
-		while (not_terminal > 0) {
-			not_terminal += ArityMin1(*current_node++);
+		int not_end_of_subtree = 1;
+		while (not_end_of_subtree > 0) {
+			not_end_of_subtree += ArityMin1(*current_node++);
 		}
 	}
 
@@ -422,13 +423,18 @@ namespace Primitives
 
 	float Evaluate(std::string program)
 	{
-		int num_total_food = World::world.height * World::world.width - 4;
+		int num_total_food = World::world.height * World::world.width - 3;
 		float score = 0.0f;
 
 		for (int run = 0; run < 5; ++run) {
 			Snake::snake.Spawn();
-			if (display)
+
+			if (display) {
+				Console::cls();
+				std::cout << World::world;
 				std::cout << Snake::snake;
+			}
+
 			SpawnFood();
 
 			while (Snake::snake.IsAlive() && Snake::snake.steps_left > 0) {
@@ -510,14 +516,10 @@ namespace Primitives
 		Console::Maximise();
 		Console::HideCursor();
 
-		std::cout << World::world;
-
 		Evaluate(Load(program_path));
 
-		Console::SetCursorPosition(0, World::world.height);
+		Console::SetCursorPosition(0, World::world.height + 4);
 
-		printf("\nNo. pieces available: %d", World::world.height * World::world.width);
-		printf("\nNo. pieces eaten: %d", Snake::snake.food_eaten);
 		printf("\nDone!");
 		getchar();
 	}
