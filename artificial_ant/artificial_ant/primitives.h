@@ -57,7 +57,11 @@ namespace Primitives
 
 	Function fset[];
 
+<<<<<<< HEAD
 	int ArityMin1(char& x, char dummy = '0');
+=======
+	int ArityMin1(char x, char dummy = '0');
+>>>>>>> snake_game_development
 
 	float Evaluate(std::string program);
 

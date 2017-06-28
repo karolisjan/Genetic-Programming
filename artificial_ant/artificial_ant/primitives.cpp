@@ -72,7 +72,15 @@ namespace Primitives
 			++current_node;
 		}
 		else {
+<<<<<<< HEAD
 			++current_node;
+=======
+			//for (int children = 1; children > 0; children += ArityMin1(*current_node++))
+			int not_terminal = 1;
+			while (not_terminal > 0) {
+				not_terminal += ArityMin1(*current_node++);
+			}
+>>>>>>> snake_game_development
 			Next();
 		}
 
@@ -235,7 +243,11 @@ namespace Primitives
 		getchar();
 	}
 
+<<<<<<< HEAD
 	int ArityMin1(char& x, char dummy)
+=======
+	int ArityMin1(char x, char dummy)
+>>>>>>> snake_game_development
 	{
 		if (x < Primitives::FSET_START)
 			return -1;
