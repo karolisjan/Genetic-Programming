@@ -47,6 +47,14 @@ namespace Primitives
 	Function tset[] = { Move, Right, Left }; // terminal set
 	Function fset[] = { IfFoodAhead, Prog2, Prog3 }; // function set
 
+	void SkipSubtree()
+	{
+		int not_end_of_subtree = 1;
+		while (not_end_of_subtree > 0) {
+			not_end_of_subtree += ArityMin1(*current_node++);
+		}
+	}
+
 	int Primitives::IsFoodAhead()
 	{
 		char x = Ant::ant.x + Ant::ant.facing.first,
@@ -72,15 +80,7 @@ namespace Primitives
 			++current_node;
 		}
 		else {
-<<<<<<< HEAD
-			++current_node;
-=======
-			//for (int children = 1; children > 0; children += ArityMin1(*current_node++))
-			int not_terminal = 1;
-			while (not_terminal > 0) {
-				not_terminal += ArityMin1(*current_node++);
-			}
->>>>>>> snake_game_development
+			SkipSubtree();
 			Next();
 		}
 
@@ -243,11 +243,7 @@ namespace Primitives
 		getchar();
 	}
 
-<<<<<<< HEAD
-	int ArityMin1(char& x, char dummy)
-=======
 	int ArityMin1(char x, char dummy)
->>>>>>> snake_game_development
 	{
 		if (x < Primitives::FSET_START)
 			return -1;
