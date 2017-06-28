@@ -57,7 +57,7 @@ namespace Primitives
 
 	Function fset[];
 
-	int ArityMin1(char& x, char dummy = '0');
+	int ArityMin1(char x, char dummy = '0');
 
 	float Evaluate(std::string program);
 

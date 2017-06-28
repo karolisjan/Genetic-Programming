@@ -8,6 +8,7 @@
 #include "utils/ini_reader.hpp"
 #include "utils/custom_console.h"
 #include "world.h"
+#include "snake.h"
 #include "primitives.h"
 #include "genetic_programming.h"
 
@@ -53,23 +54,20 @@ namespace
 		if (seed == 0)
 			seed = time(0);
 
-		section = "TRAIL_OPTIONS";
-		std::string trail_path = ini.Read<std::string>(section, "trail_filepath");
-
-		section = "ANT_OPTIONS";
-		int ant_x = ini.Read<int>(section, "init_spawn_x");
-		int ant_y = ini.Read<int>(section, "init_spawn_y");
-		int facing_x = ini.Read<int>(section, "facing_x");
-		int facing_y = ini.Read<int>(section, "facing_y");
+		section = "SNAKE_OPTIONS";
 		int max_steps = ini.Read<int>(section, "max_steps");
+
+		section = "WORLD_OPTIONS";
+		int width = ini.Read<int>(section, "width");
+		int height = ini.Read<int>(section, "height");
 
 		Primitives::SetUp();
 
 		gp.SetUp(seed, popsize, generations, pcrossover,
 			tournament_size, pm_per_node, max_length, max_depth, verbose);
 
-		World::world.SetUp(trail_path);
-		Ant::ant.SetUp(ant_x, ant_y, std::make_pair(facing_x, facing_y), max_steps);
+		World::world.SetUp(height, width);
+		Snake::snake.SetUp(max_steps, width, height);
 
 		ini.Close(); 
 	}

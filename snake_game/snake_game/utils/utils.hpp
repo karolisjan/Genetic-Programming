@@ -1,8 +1,6 @@
 #pragma once
 
 #include <stdlib.h>
-#include <algorithm>
-
 
 template<typename T>
 extern inline T	random(T min = 0, T max = 0) 
@@ -28,19 +26,17 @@ extern inline void	clamp(T &val, T a, T b)
 		val = b;
 }
 
-template<class Container, class Iterator>
-extern Iterator	random_from(Container &v) 
+template<class Iterator>
+Iterator random_from(Iterator begin, Iterator end)
 {
-	assert(v.size() > 0);
+	int size = end - begin;
 
-	const unsigned long divisor = (RAND_MAX + 1) / v.size();
-	unsigned long k;
-	do { k = rand() / divisor; } while (k >= v.size());
+	unsigned long divisor = (RAND_MAX + 1) / size, k = divisor;
 
-	Iterator iter = v.begin;
-	std::advance(iter, k);
+	do { k = rand() / divisor; }
+	while (k >= size);
 
-	return iter;
+	return begin + k;
 };
 
 

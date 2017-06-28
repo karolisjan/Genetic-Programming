@@ -9,25 +9,25 @@
 
 namespace Primitives
 {
-	typedef int(*Function)();
+	/*List of helpers*/
 
-	extern std::unordered_map<char, Function> terminals;
-	extern std::unordered_map<char, Function> jumptable;
-	extern std::string::const_iterator current_node;
+	void CheckFood();
 
-	int Next();
+	void SpawnFood();
 
-	int Terminal();
+	void MakeMove();
 
-	void SetUp();
+	void SkipSubtree();
 
-	int Move();
+	bool IsFoodAhead();
 
-	int IsFoodAhead();
+	bool IsDangerNear(int x, int y);
+
+	/*End of helpers list*/
+
+	/*Start of the primitives list (all return 0 and invoke Next())*/
 
 	int IfFoodAhead();
-
-	bool IsDangerNear();
 
 	int IfFoodAhead();
 
@@ -59,8 +59,6 @@ namespace Primitives
 
 	int Prog2();
 
-	int Prog3();
-
 	enum terminal_set
 	{
 		TSET_START = 1,
@@ -85,15 +83,29 @@ namespace Primitives
 		IF_MOVING_LEFT,
 		IF_MOVING_RIGHT,
 		PROG2,
-		PROG3,
 		FSET_END = PROG2
-	};
+	}; 
+
+	/*End of the primitives list*/
+
+	typedef int(*Function)();
+
+	extern std::unordered_map<char, Function> terminals;
+	extern std::unordered_map<char, Function> jumptable;
+	extern std::unordered_map<char, int> arity;
+	extern std::string::const_iterator current_node;
+
+	int Next();
+
+	int Terminal();
+
+	void SetUp();
 
 	Function tset[];
 
 	Function fset[];
 
-	int ArityMin1(char& x, char dummy = '0');
+	int ArityMin1(char x, char dummy = '0');
 
 	float Evaluate(std::string program);
 

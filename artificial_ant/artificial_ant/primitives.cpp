@@ -37,7 +37,7 @@ std::ostream &operator<<(std::ostream &os, Ant::Ant& ant)
 {
 	Console::SetCursorPosition(ant.x * 2, ant.y);
 	os << ant.Draw();
-	boost::this_thread::sleep(boost::posix_time::milliseconds(150));
+	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
 
 	return os;
 }
@@ -72,7 +72,11 @@ namespace Primitives
 			++current_node;
 		}
 		else {
-			++current_node;
+			//for (int children = 1; children > 0; children += ArityMin1(*current_node++))
+			int not_terminal = 1;
+			while (not_terminal > 0) {
+				not_terminal += ArityMin1(*current_node++);
+			}
 			Next();
 		}
 
@@ -235,7 +239,7 @@ namespace Primitives
 		getchar();
 	}
 
-	int ArityMin1(char& x, char dummy)
+	int ArityMin1(char x, char dummy)
 	{
 		if (x < Primitives::FSET_START)
 			return -1;
