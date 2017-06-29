@@ -431,8 +431,8 @@ namespace Primitives
 
 			if (display) {
 				Console::cls();
-				std::cout << World::world;
 				std::cout << Snake::snake;
+				std::cout << World::world;
 			}
 
 			SpawnFood();

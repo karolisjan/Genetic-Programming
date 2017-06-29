@@ -69,11 +69,11 @@ namespace Snake
 				if (X[s] == X[0] && Y[s] == Y[0])
 					return false;
 
-			if (X[0] > X.size())
+			if (X[0] > width)
 				return false;
 			if (X[0] < 1)
 				return false;
-			if (Y[0] > Y.size())
+			if (Y[0] > height)
 				return false;
 			if (Y[0] < 1)
 				return false;
